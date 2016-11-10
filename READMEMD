@@ -1,0 +1,334 @@
+
+一：let与const命令
+    let 声明变量的方式
+        1、只在块级区域中有效
+        2、重复声明变量报错
+        3、在块级作用域中不支持变量提升
+        4、当全局变量中的变量名和块级中的变量名相同时，全局变量会出现“暂时死区”，就是块级作用域中引用全局变量会博爱错。
+
+    const 常量声明方式
+        1、一旦声明，值就不能改变
+        2、变量只在块级作用域中有效
+        3、不支持变量提升
+        4、重复声明报错
+        5、const命令只是保证变量指向的地址不变，并不保证改地址的数据不变
+
+    全局对象：
+        1、window.a
+二、变量的解构赋值
+    从数组和对象中提取值，对变量进行赋值，这被称为解构
+    数组的解构赋值：    
+        1、var [a, b, c] = [1, 2, 3]; //  a=1, b=2, c=3
+        2、let [a, , c] = [1, 2, 3]; // a=1, y=3;
+        3、let [head, ...tail] = [1, 2, 3, 4]; // head=1, tail=[2, 3, 4]
+        4、let [a, b, ...c] = ['a']; // x='a', y=undefined, z=[]
+        5、let [a, b] = [1, 2, 3]; // a=1, b=2
+        6、let [a, [b], d] = [1, [2, 3], 4]; // a=1, b=2, d=4
+        7、var [foo = true] = []; //foo=true;
+        8、var [x = 1] = [undefined]; //x =1;
+        9、var [x=1] = [null]; // x = null
+        10、let [x = 1, y = x] = [2]; // x = 1, y = 2;
+        11、let [x = y, y = 1] = []; // 报错
+    对象的解构赋值：
+        数组的元素是按次序排列的，变量的取值由它的位置决定，而对象的属性没有次序，变量必须与属性同名，才能取到正确的值
+        1、var {foo, bar} = {foo:'aaa', bar:'bbb'} // foo= 'aaa', bar = 'bbb'
+        2、var {baz} = {foo: 'aaa', bar: 'bbb'} // baz=undefined
+        3、var {foo:baz} = {foo:'aaa', bar:'bbb'} // baz='aaa'
+        4、var {foo:baz} = {foo:'aaa', bar:'bbb'}; // baz='aaa', foo = 'error: foo is not undefined'
+        5、var {x:y = 3} = {x : 5} // y = 5
+
+    字符串的解构赋值：
+        const [a, b, c, d, e] ='hello'; // a = h, b = e, c = l, d = l, e = o
+    数值和布尔值的解构赋值：
+        解构赋值时， 如果等号右边是数值和布尔值，则会先转为对象。
+        let {toString: s} = 123;
+        s === Number.prototype.toString // true
+
+        let {toString: s} = true;
+        s === Number.prototype.toString // true
+
+        let {prop:x} = undefined // TypeError
+        let { prop:y } = null; // TypeError
+    函数参数的解构赋值
+    用途：
+        1、交换变量的值
+        2、从函数返回多个值
+        3、函数参数的定义
+        4、提取json的数据
+        5、函数参数的默认值
+        6、遍历Map解构
+
+
+
+三、字符串的扩展
+    字符的Unicode表示法：
+        '\u0061' 限于\u0000 -- \uFFFF 之间的字符，超出这个范围的字符，必须用双字节的形式表达 \uD842\uDFB7
+    
+    codePointAt():
+        JavaScript内部，字符一UTF-16的格式存储，每个字符固定为2个字节。
+        codePointAt(),能够正确处理4个字节存储的字符，返回一个字符的码节
+
+    String.fromCodePoint():
+        ES5中用于从码店返回对应字符，但是这个方法不能识别32位的UTF-16字符。
+        不能识别大于0xFFFF的码点，所以0x20BB7就繁盛了溢出，最高位2被舍弃了。
+
+        ES6 中可以识别0xFFFF的字符
+
+    includes()、startsWith()、endsWith()
+        includes():返回布尔值，表示是否找到了参数字符串
+        startsWith():返回布尔值，表示参数字符串是否在源字符串的头部
+        endsWith(): 返回布尔值，表示数字字符串是否在源字符串的尾部
+    repeat():
+        repeat() 将原字符串重复n次
+        'x'.repeat(3) // xxx
+        'hello'.repeat(2) // hellohello
+    padStart(),padEnd()
+        补全长度的功能，如果字符串不够指定长度，会在头部或尾部补全
+        如果原字符串的长度，等于或大于指定的最小长度，则返回原字符串
+        'x'.padStart(5, 'ab') // ababx
+        'x'.padEnd(4, 'ab'); // xaba
+    append():
+        模板字符串
+        ${x + y} JavaScript表达式
+        <%= %>
+    标签模板：
+        alert '1234' 
+        alert('1234')
+    String.raw():
+        充当模板字符的处理函数， 返回一个斜杠都被转义的字符串，对应于替换变量后的模板字符串
+
+四、正则的扩展
+    RegExp构造函数：
+        var regex = new RegExp('xyz', 'i');
+        等价于
+        var regex = /xyz/i;
+    字符串的正则方法：
+        字符串对象共有4个方法，可以使用正则表达式：match(),replace(),search()和split()
+        这4个方法在语言内部全部调用REGEXP的实例方法。
+    u修饰符
+        es6中添加了u修饰符，含义为"Unicode"模式，用来正确处理大于\uFFFF的Unicode字符
+        /^\uD83D/u.test('\uD83D\uDC2A') // false
+        /^\uD83D/.test('\uD83D\uDC2A') // true
+    sticky
+    flags
+    RegExp.escape():字符串必须转义，才能作为正则表达式
+五、数值的扩展：
+    二进制和八进制表示法，分别用前缀0b(或0B)和0o(或0O)表示
+    Number.isFinite(), Number.isNaN()
+        Number.isFinite():用来检查一个数值是否为有限的（finite）
+        Number.isNaN():检查是否为NaN (is not a number)
+        Number.parseInt()： 将一个值转换成整数
+        Number.parseFloat(): 将一个值转换成float 类型
+        Number.isInteger(): 判断一个值是否为整数  JavaScript中，中暑和浮点数是同样的存储方法，所以3.0 和 3 被视为同一个值
+        Number.EPSILON: es6 新增，浮点类型，一个可接受的误差范围
+        Number.isSafeInteger(): 用来判断一个整数是否在2的53 次方范围之内
+        Math.trunc(): 去除一个数的小数部分， 返回整数部分
+        Math.sign(): 判断一个数到底是整数、负数、还是零
+        Math.cbrt() 计算一个数的立方根
+        Math.clz32(): 
+        Math.imul(): 返回两个数以32位带符号整数形式相乘的结果，返回一个32位的带符号整数
+        Math.fround()：返回一个数的单精度浮点数形式
+
+六：数组的扩展
+    Array.from()：将两类对象转为真正的数组：类似的数组对象和可遍历的对象
+    Array.of(): 将一组值转换成数组
+    copyWithin():复制指定的元素
+    find(): 用于找出第一个符合条件的数组成员
+    findIndex(): 返回第一个符合条件的数组成员的位置
+    fill(): 填充一个数组，如果数组中已有元素，会被全部抹去。
+    entries(): 对键值对的比遍历
+    keys():对键名的遍历
+    values(): 对键值的遍历
+    includes(): 返回一个布尔值，表示某个数组是否包含给定的值，与字符串的includes方法类似。
+    forEach()、filter()、every()和some() 表过空位
+    map()会跳过空位，但会保留这个值
+    join()和toString()将空位视为undefined，而undefined和null会被处理成空字符串
+
+七、函数的扩展
+    1、函数参数的默认值：
+        在es6之前，不能直接为函数的参数指定默认值。
+        es6允许为函数的参数设置默认值，级直接写在参数定义的后面
+        函数的length属性：
+            将返回没有指定默认值的参数个数，如果指定了默认值后，length属性将失真
+            (function (a) {]}).length; // 1
+            (function (a = 4) {}).length;// 0
+            (function (a = 0, b, c) {}).length // 0
+            (function (a, b = 1, c) {}).length // 1
+            函数的length属性不包括rest参数。
+        作用域
+    2、rest参数
+        ES6中引入rest参数（...变量名）, 用于获取函数的多余参数，这样就不需要使用arguments对象了。
+    
+    3、扩展运算符
+        扩展运算符就是三个点(...). 将一个数组转为用逗号分隔的参数序列
+        合并数组：
+            var arr1 = [1,2,3];
+            var arr2 = [4, 6, 7];
+            var arr3 = [8, 10, 34];
+            [...arr1, ...arr2, ...arr3] // [1, 2, 3, 4, 6, 7, 8, 10, 34]
+        与解构赋值结合：
+            const [first, ...rest] = [1, 2, 3, 4, 5]; // first=1， rest=[2, 3, 4, 5]
+            const [...butlast, last] = [1, 2, 3, 4, 5]; // 报错
+            const [first, ...middle, last] = [1, 2, 3, 4, 5]; // 报错
+        函数的返回值：
+            JavaScript的函数只能返回一个值，如果需要返回多个值，只能返回数组或对象，扩展运算符解决了这个问题的。
+            var dataFileds = readDateFileds(database);
+            var d = new Date(...dateFileds);
+        字符串：
+            可以将字符串转为真正的数组.
+            [...'hello'] // ['h', 'e', 'l', 'l', 'o'];
+            能正确识别32位的Unicode字符
+        实现了Iterator接口的对象
+        Map、Set结构，Generator函数
+    4、name属性：
+        函数的name属性返回该函数的函数名
+    5、箭头函数：
+        ES6允许使用“箭头”(=>)定义函数
+        var f = () => { x= 5} 等价于
+        var f = function () {return x = 5;}
+    6、函数绑定：
+        foo::bar 等同于 bar.bind(foo);
+    7、尾调用优化
+        尾调用是函数式编程的一个重要概念，就是指某个函数的最后一步是调用另一个函数。
+        function f(x) {
+            return g(x);
+        }
+        尾调用优化
+            函数调用会在内存形成一个“调用记录”，又称“调用帧”，保存调用位置和内部变量等信息。
+            调用栈
+            “尾调用优化”：即只保留内层函数的调用帧。如果所有函数都是尾部调用，那么完全可以做到每次执行时，调用帧只有一项，这将大大节省内存。
+            尾递归：
+                函数调用自身，成为递归
+            递归函数的改写：
+                函数式编程有一个概念，叫做柯里化，意思就是讲多参数的函数转换成单参数的形式
+
+八、对象的扩展 (???)
+    1、属性的简洁表示法
+    2、object.assign(): 用于对象合并，将源对象的所有可枚举属性，复制到目标对象。
+    3、属性遍历：
+        for ... in
+
+九、Symbol(???)
+    是JavaScript语言的第七种数据类型，前六种是Undefined、Null、Boolean、String、Number、Object.
+    Symbol值通过symbol 函数生成
+十、Proxy和Reflect(???)
+    1、Proxy 概述：
+        用于修改某些操作的默认行为，等同于在语言层面做出修改，所以属于一种“元编程”，即对编程语言进行编程。
+        Proxy 实际上重载了点运算符。
+十一：二进制数组
+    二进制数组是JavaScript操作二进制数据的一个接口。
+    二进制数由三类对象组成：
+        1、ArrayBuffer：原始的二进制数据
+        2、TypedArray: 用来读写简单类型的二进制数据
+        3、DataView：读写复杂类型的二进制数据。
+    1、ArrayBuffer对象：
+        代表存储二进制数据的一段内存，不能直接读写，只能通过视图（TypedArray、DataView）来读写，视图作用是以指定格式解读二进制数据
+        ArrayBuffer.prototype.byteLength:返回所分配的内存区域的字节长度
+        ArrayBuffer.prototype.slice():允许将内存区域的一部分，拷贝生成一个新的ArrayBuffer对象
+        ArrayBuffer.isView(): 返回一个布尔值，表示参数是否为ArrayBuffer的视图实例。
+    2、TypedArray视图：
+        ArrayBuffer对象作为内存区域，可以存放多种类型的数据。同一段内存，不同数据有不同的解读方式，这就叫做“视图”。
+        ArrayBuffer 有两种视图，一种是TypedArray，另一种是DataView视图。
+        TypedArray的数组成员都是同一个数据类型，DataView的数组成员可以是不同的数据类型。
+        包含九种数据类型，每一种视图都是构造函数。
+            Int8Array: 8位有符号整数，长度1个字节
+            Uint8Array: 8位无符号整数，长度1个字节
+            Uint8ClampedArray: 8位无符号整数，长度1个字节，溢出处理不同
+            Int16Array: 16位有符号整数，长度2个字节
+            Uint16Array: 16位无符号整数，长度2个字节
+            Int32Array: 32位有符号整数，长度4个字节
+            Uint32Array: 32位无符号整数，长度4个字节
+            Float32Array: 32位浮点数，长度4个字节
+            Float64Array: 64位浮点数，长度8个字节。
+        
+十二、Set和Map数据结构
+    1、set
+        类似于数组，es6新增加的，成员的值都是唯一的，没有重复值。
+        Set本身是一个构造函数，用来生成Set数据结构
+        [...new Set(array)]  // 去除数组的重复成员
+        Set.prototype.size:返回Set实例的成员总数
+        add(value): 添加某个值，返回Set结构本身
+        delete(value):删除某个值，返回一个布尔值，表示删除是否成功。
+        has(value):返回一个布尔值，表示该值是否为Set成员
+        clear():清除所有成员，没有返回值。
+        遍历：
+            keys(): 返回键名的遍历器
+            values(): 返回键值的遍历器
+            entries():返回键值对的遍历器
+            forEach()：使用回调函数遍历每个成员
+    2、WeakSet
+        结构与set相似，也是不重复的值的集合
+        区别：
+            WeakSet的成员只能是对象，而不能是其他类型的值。
+            WeakSet的对象都是弱引用，即垃圾回收机制不考虑WeakSet对该对象的引用。
+            WeakSet不能遍历，因为成员都是弱引用，随时可能消失，遍历机制无法保证成员的存在，很可能刚刚遍历结束，成员就娶不到了。
+
+    3、Map
+        JavaScript的对象，本质上是键值对的集合（Hash结构）。
+        size:返回Map 结构的成员总数
+        set(key, value): 设置key所对应的键值，然后返回整个Map结构
+        get(key): 读取key 对应的键值，如果找不到key, 返回undefined
+        has(key): 返回一个布尔值，表示某个键是否存在Map数据结构中。
+        delete(key): 删除某个键，返回布尔值
+        clear(): 清除所有成员，没有返回值。
+        遍历：
+            keys(): 返回键名的遍历器
+            values(): 返回键值的遍历器
+            entries():返回键值对的遍历器
+            forEach()：使用回调函数遍历每个成员
+
+    4、WeakMap
+        与map结构基本类似，唯一的区别是他只接受对象作为键名(null除外)，不接受其他类型的值作为键名，而且键名所指向的对象，不计入垃圾回收机制。
+        WeakMap的键名是对象的弱引用，所以其对应的对象可能会被自动回收，当对象被回收后，WeakMap自动移除对应的键值对。
+        WeakMap结构有助于防止内存泄漏。
+        只有四个方法可用：get(),set(),has(),delete()
+
+十三、Iterator 和 for...of 循环
+    1、Iterator 的概念
+        遍历器就是一种机制，一种接口，为各种不同的数据结构提供统一的访问机制。
+        作用：
+            为各种数据结构提供一个统一的、简便的访问接口
+            使数据结构的成员能够按某种次序排列
+            创造了一种新的遍历命令for...of循环，iterator接口主要供for...of消费
+
+    2、数据结构的默认Iterator接口
+        目的：为所有数据结构提供了一种统一的访问机制，即for...of循环。当使用for...of循环遍历某种数据结构时，该循环会自动去寻找Iterator接口
+        一个数据结构只要具有Symbol.iterator属性，就可以认为是“可遍历的”
+        一个对象如果要有可被for...of循环调用的Iterator接口，就必须在Symbol.iterator的属性上部署遍历器生成方法。
+
+    3、调用Iterator接口的场合
+        解构赋值：
+        扩展运算符
+        yield*
+        其他场合：  
+            for...of
+            Array.from()
+            Map(),Set(),WeakMap(),WeakSet()
+            Promise.all()
+            Promise.race();
+    4、字符串的Iterator接口
+        字符串是一个类似数组的对象，也原生具有Iterator接口
+    5、Iterator接口与Generator函数
+    6、遍历器对象的return(), throw()
+        遍历器对象除了具有next()方法，还具有return方法和throw方法。自己写遍历器对象生成函数，next()方法是必须部署的，return()和throw()
+    7、for...of循环
+        一个数据结构只要部署了Symbol.iterator属性，就被视为具有Iterator接口，就可以用for...of循环遍历它的成员。
+
+十四、Generator函数
+    1、简介
+        Generator函数式ES6提供的一种异步编程解决方案，语法行为与传统函数完全不同。
+        函数特征：
+            function关键字与函数名之间有一个星号
+            函数体内部使用yield语句，定义不同的内部状态
+        yield语句
+            yield语句就是暂停标志。
+            遇到yield语句，就暂停执行后面的操作，并将紧跟在yield后面的那个表达式的值作为返回的对象的value属性值
+            
+    2、next方法的参数
+        可以再Generator函数运行的不同阶段，从外部向内部注入不同的值，从而调整函数行为。
+    3、for...of循环
+        for...of循环可以自动遍历Generator函数时生成的Iterator对象，且此时不再需要调用next()方法
+    4、Generator.prototype.throw()
+        Generator 函数返回的遍历器对象，都有一个throw方法，可以在函数体外抛出错误，然后在Generator函数体外捕获
+        
+        
